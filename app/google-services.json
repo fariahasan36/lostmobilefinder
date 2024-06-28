@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "904549475391",
+    "firebase_url": "https://lostmobilefinderapp-a54bb-default-rtdb.firebaseio.com",
+    "project_id": "lostmobilefinderapp-a54bb",
+    "storage_bucket": "lostmobilefinderapp-a54bb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:904549475391:android:1722df9cd6ac45e6e0c48a",
+        "android_client_info": {
+          "package_name": "com.lostmobilefinderapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBhotUD63lGTOj8Dg4SNiPWDenXxPqSd5Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
