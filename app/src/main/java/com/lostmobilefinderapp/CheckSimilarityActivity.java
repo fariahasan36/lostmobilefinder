@@ -49,6 +49,8 @@ public class CheckSimilarityActivity extends AppCompatActivity {
     private ArrayAdapter<String> adapter;
     private double similarityPercentage;
 
+    // get help from  https://opencv.org/
+    // Find the similarity of lost and found images
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

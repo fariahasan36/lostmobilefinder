@@ -15,6 +15,8 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 public class EmailHelper {
+    // send an email function
+    // get help from https://programmerworld.co/
     public static void sendEmail(Context context, String recipient, String subject, String message) {
         try {
             Log.d("TAG", "recipient " + recipient);

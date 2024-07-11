@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 public class SessionManagement {
+
+    // get help from  Android tutorial for handling session of user
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
     String SHARED_PREF_NAME = "session";

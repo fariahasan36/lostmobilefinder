@@ -14,7 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder> {
-
+    // get help from  Android Studio Tutorial
+    // Signup a user
     private Context context;
     private List<UserModel> userModelList;
 

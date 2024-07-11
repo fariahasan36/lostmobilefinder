@@ -46,6 +46,8 @@ public class ChatActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     MessageAdapter messageAdapter;
 
+    // get help from  Android Studio Tutorial
+    // Chatting Feature
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

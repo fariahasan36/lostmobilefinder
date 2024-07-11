@@ -23,6 +23,9 @@ public class LoginActivity extends AppCompatActivity {
     Button loginButton;
     TextView signupRedirectText;
 
+
+    // get help from  Android Studio Tutorial
+    // Login a user class
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
