@@ -1,5 +1,9 @@
 package com.lostmobilefinderapp;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
@@ -34,12 +38,12 @@ public class UpdateMyProfileActivity extends AppCompatActivity {
     //    String updateUsername;
     Button updateMyProfileButton;
     DrawerLayout drawerLayout;
-    ImageView menu, myImage;
+    private ImageView menu, updateMyImage;
     String imageUrl, key;
     TextView updateMyName, updateMyEmail, updateMyPassword;
-    LinearLayout home, getMyPhone, settings, chat, share, about, logout;
+    LinearLayout home, getMyPhone, settings, chat, userList, about, logout;
     //    FloatingActionButton editMyProfile;
-    Uri uri;
+    private Uri uri;
     DatabaseReference databaseReference;
 
     @Override
@@ -53,7 +57,7 @@ public class UpdateMyProfileActivity extends AppCompatActivity {
         getMyPhone = findViewById(R.id.getMyPhone);
         settings = findViewById(R.id.settings);
         chat = findViewById(R.id.chat);
-        share = findViewById(R.id.share);
+        userList = findViewById(R.id.userList);
         about = findViewById(R.id.about);
         logout = findViewById(R.id.logout);
 
@@ -61,7 +65,7 @@ public class UpdateMyProfileActivity extends AppCompatActivity {
         updateMyEmail = findViewById(R.id.updateMyEmail);
         updateMyPassword = findViewById(R.id.updateMyPassword);
         updateMyProfileButton = findViewById(R.id.updateMyProfileButton);
-//        myImage = findViewById(R.id.updateMyImage);
+        updateMyImage = findViewById(R.id.updateMyImage);
 
 
         menu.setOnClickListener(new View.OnClickListener() {
@@ -100,10 +104,10 @@ public class UpdateMyProfileActivity extends AppCompatActivity {
                 redirectActivity(UpdateMyProfileActivity.this, AboutActivity.class);
             }
         });
-        share.setOnClickListener(new View.OnClickListener() {
+        userList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                redirectActivity(UpdateMyProfileActivity.this, ShareActivity.class);
+                redirectActivity(UpdateMyProfileActivity.this, ListUserActivity.class);
             }
         });
         logout.setOnClickListener(new View.OnClickListener() {
@@ -117,7 +121,7 @@ public class UpdateMyProfileActivity extends AppCompatActivity {
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
-            // Glide.with(UpdateFoundMobileActivity.this).load(bundle.getString("Image")).into(updateFoundImage);
+            Glide.with(UpdateMyProfileActivity.this).load(bundle.getString("ImageUrl")).into(updateMyImage);
             updateMyName.setText(bundle.getString("Name"));
             updateMyEmail.setText(bundle.getString("Email"));
             key = bundle.getString("Key");
@@ -125,41 +129,103 @@ public class UpdateMyProfileActivity extends AppCompatActivity {
 
         Log.d("UserKey", "UserKey" + key);
 
+        ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == Activity.RESULT_OK) {
+                            Intent data = result.getData();
+                            uri = data.getData();
+                            updateMyImage.setImageURI(uri);
+                        } else {
+                            Toast.makeText(UpdateMyProfileActivity.this, "No Image Selected", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+        );
+        updateMyImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent photoPicker = new Intent();
+                photoPicker.setAction(Intent.ACTION_PICK);
+                photoPicker.setType("image/*");
+                activityResultLauncher.launch(photoPicker);
+            }
+        });
         updateMyProfileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SessionManagement sessionManagement = new SessionManagement(UpdateMyProfileActivity.this);
+                saveUserData();
+            }
+        });
+    }
 
-                // Get the Firebase database reference
-                databaseReference = FirebaseDatabase.getInstance().getReference("users").child(key);
+    public void saveUserData() {
 
-                // Retrieve input values
-                String name = updateMyName.getText().toString();
-                String email = updateMyEmail.getText().toString();
-                String password = updateMyPassword.getText().toString();
+        StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("User Images")
+                .child(uri.getLastPathSegment());
 
-                // Validate inputs
-                if (name.isEmpty() || email.isEmpty() || password.isEmpty()) {
-                    Toast.makeText(UpdateMyProfileActivity.this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
-                    return;
+        AlertDialog.Builder builder = new AlertDialog.Builder(UpdateMyProfileActivity.this);
+        builder.setCancelable(false);
+        builder.setView(R.layout.progress_layout);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        storageReference.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
+                while (!uriTask.isComplete()) ;
+                Uri urlImage = uriTask.getResult();
+                imageUrl = urlImage.toString();
+                try {
+                    updateFoundData();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
                 }
+                dialog.dismiss();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                dialog.dismiss();
+            }
+        });
+    }
 
-                // Create UserModel object
-                UserModel helperClass = new UserModel(name, email, sessionManagement.getSession(), password);
+    public void updateFoundData() throws Exception {
+        SessionManagement sessionManagement = new SessionManagement(UpdateMyProfileActivity.this);
 
-                // Update the user's profile in Firebase
-                databaseReference.setValue(helperClass).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(UpdateMyProfileActivity.this, "Your profile updated successfully!", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(UpdateMyProfileActivity.this, SettingsActivity.class);
-                            startActivity(intent);
-                        } else {
-                            Toast.makeText(UpdateMyProfileActivity.this, "Failed to update profile. Please try again.", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+        // Get the Firebase database reference
+        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(key);
+
+        // Retrieve input values
+        String name = updateMyName.getText().toString();
+        String email = updateMyEmail.getText().toString();
+        String password = AESCrypt.encrypt(updateMyPassword.getText().toString().trim());
+
+        // Validate inputs
+        if (name.isEmpty() || email.isEmpty() || password.isEmpty()) {
+            Toast.makeText(UpdateMyProfileActivity.this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Create UserModel object
+        UserModel helperClass = new UserModel(name, email, sessionManagement.getSession(), password, imageUrl);
+
+        // Update the user's profile in Firebase
+        databaseReference.setValue(helperClass).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Toast.makeText(UpdateMyProfileActivity.this, "Your profile updated successfully!", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(UpdateMyProfileActivity.this, SettingsActivity.class);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(UpdateMyProfileActivity.this, "Failed to update profile. Please try again.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

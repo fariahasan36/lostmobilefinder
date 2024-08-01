@@ -63,7 +63,7 @@ public class CreateLostMobileActivity extends AppCompatActivity {
     //start menu
     DrawerLayout drawerLayout;
     ImageView menu;
-    LinearLayout home, getMyPhone, settings, share, about, logout;
+    LinearLayout home, getMyPhone, settings, userList, about, logout;
     Button postLostMobile, postFindMobile;
     //end menu
 
@@ -90,7 +90,7 @@ public class CreateLostMobileActivity extends AppCompatActivity {
         home = findViewById(R.id.home);
         getMyPhone = findViewById(R.id.getMyPhone);
         settings = findViewById(R.id.settings);
-        share = findViewById(R.id.share);
+        userList = findViewById(R.id.userList);
         about = findViewById(R.id.about);
         logout = findViewById(R.id.logout);
 
@@ -124,10 +124,10 @@ public class CreateLostMobileActivity extends AppCompatActivity {
                 redirectActivity(CreateLostMobileActivity.this, AboutActivity.class);
             }
         });
-        share.setOnClickListener(new View.OnClickListener() {
+        userList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                redirectActivity(CreateLostMobileActivity.this, ShareActivity.class);
+                redirectActivity(CreateLostMobileActivity.this, ListUserActivity.class);
             }
         });
         logout.setOnClickListener(new View.OnClickListener() {

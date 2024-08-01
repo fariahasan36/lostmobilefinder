@@ -47,7 +47,7 @@ public class UpdateLostMobileActivity extends AppCompatActivity {
     DrawerLayout drawerLayout;
     ImageView menu, updateLostImage;
 
-    LinearLayout home, getMyPhone, settings, chat, share, about, logout;
+    LinearLayout home, getMyPhone, settings, chat, userList, about, logout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +60,7 @@ public class UpdateLostMobileActivity extends AppCompatActivity {
         getMyPhone = findViewById(R.id.getMyPhone);
         settings = findViewById(R.id.settings);
         chat = findViewById(R.id.chat);
-        share = findViewById(R.id.share);
+        userList = findViewById(R.id.userList);
         about = findViewById(R.id.about);
         logout = findViewById(R.id.logout);
 
@@ -109,10 +109,10 @@ public class UpdateLostMobileActivity extends AppCompatActivity {
                 redirectActivity(UpdateLostMobileActivity.this, AboutActivity.class);
             }
         });
-        share.setOnClickListener(new View.OnClickListener() {
+        userList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                redirectActivity(UpdateLostMobileActivity.this, ShareActivity.class);
+                redirectActivity(UpdateLostMobileActivity.this, ListUserActivity.class);
             }
         });
         logout.setOnClickListener(new View.OnClickListener() {

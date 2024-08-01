@@ -1,10 +1,13 @@
 package com.lostmobilefinderapp;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,6 +18,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.github.clans.fab.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -24,20 +28,21 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserActivity extends AppCompatActivity {
+public class ListUserActivity extends AppCompatActivity {
+    private SearchView searchView;
     private DrawerLayout drawerLayout;
     private ImageView menu;
+
     private LinearLayout home, getMyPhone, settings, userList, about, chat, logout;
     private RecyclerView recyclerView;
-    private UserAdapter userAdapter;
+    private ListUserAdapter listUserAdapter;
     private List<UserModel> dataList;
     private String yourName;
     private DatabaseReference databaseReference;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user);
+        setContentView(R.layout.activity_list_user);
 
         drawerLayout = findViewById(R.id.drawer_layout);
         menu = findViewById(R.id.menu);
@@ -48,7 +53,6 @@ public class UserActivity extends AppCompatActivity {
         chat = findViewById(R.id.chat);
         about = findViewById(R.id.about);
         logout = findViewById(R.id.logout);
-
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -58,76 +62,91 @@ public class UserActivity extends AppCompatActivity {
         home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                redirectActivity(UserActivity.this, MainActivity.class);
+                redirectActivity(ListUserActivity.this, MainActivity.class);
             }
         });
         getMyPhone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                redirectActivity(UserActivity.this, GetMyLostPhoneActivity.class);
+                redirectActivity(ListUserActivity.this, GetMyLostPhoneActivity.class);
             }
         });
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                redirectActivity(UserActivity.this, SettingsActivity.class);
+                redirectActivity(ListUserActivity.this, SettingsActivity.class);
             }
         });
         chat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                recreate();
+                redirectActivity(ListUserActivity.this, UserActivity.class);
             }
         });
         about.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                redirectActivity(UserActivity.this, AboutActivity.class);
+                redirectActivity(ListUserActivity.this, AboutActivity.class);
             }
         });
         userList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                redirectActivity(UserActivity.this, ListUserActivity.class);
+                recreate();
             }
         });
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SessionManagement sessionManagement = new SessionManagement(UserActivity.this);
+                SessionManagement sessionManagement = new SessionManagement(ListUserActivity.this);
                 sessionManagement.removeSession();
-                redirectActivity(UserActivity.this, LoginActivity.class);
+                redirectActivity(ListUserActivity.this, LoginActivity.class);
             }
         });
 
-        Toolbar toolbar = findViewById(R.id.userToolbar);
-        setSupportActionBar(toolbar);
-        SessionManagement sessionManagement = new SessionManagement(UserActivity.this);
+//        Toolbar toolbar = findViewById(R.id.userToolbar);
+//        setSupportActionBar(toolbar);
+        SessionManagement sessionManagement = new SessionManagement(ListUserActivity.this);
 
         String userName = sessionManagement.getSession();
-        getSupportActionBar().setTitle(userName);
+       // getSupportActionBar().setTitle(userName);
+
+     //   listUserAdapter = new ListUserAdapter(this);
+        recyclerView = findViewById(R.id.listUserView);
+
+//        recyclerView.setAdapter(listUserAdapter);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        searchView = findViewById(R.id.searchListUser);
+        searchView.clearFocus();
+
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(ListUserActivity.this, 1);
+        recyclerView.setLayoutManager(gridLayoutManager);
+
+//        AlertDialog.Builder builder = new AlertDialog.Builder(ListUserActivity.this);
+//        builder.setCancelable(false);
+//        builder.setView(R.layout.progress_layout);
+//        AlertDialog dialog = builder.create();
+//        dialog.show();
 
         dataList = new ArrayList<>();
-        userAdapter = new UserAdapter(this, dataList);
-        recyclerView = findViewById(R.id.recyclerChat);
 
-        recyclerView.setAdapter(userAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        listUserAdapter = new ListUserAdapter(ListUserActivity.this, dataList);
+        recyclerView.setAdapter(listUserAdapter);
 
         databaseReference = FirebaseDatabase.getInstance().getReference("users");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                userAdapter.clear();
+                listUserAdapter.clear();
 
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     String uId = dataSnapshot.getKey();
                     UserModel userModel = dataSnapshot.getValue(UserModel.class);
-                    if (userModel != null && userModel.getUsername() != null && !userModel.getUsername().equals(userName)) {
-                        userAdapter.add(userModel);
+                    if (userModel != null && userModel.getUsername() != null) {
+                        listUserAdapter.add(userModel);
                     }
-                    List<UserModel> userModelList = userAdapter.getUserModelList();
-                    userAdapter.notifyDataSetChanged();
+                    List<UserModel> userModelList = listUserAdapter.getUserModelList();
+                    listUserAdapter.notifyDataSetChanged();
                 }
             }
 
@@ -136,6 +155,28 @@ public class UserActivity extends AppCompatActivity {
 
             }
         });
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                searchList(newText);
+                return true;
+            }
+        });
+    }
+    public void searchList(String text){
+        ArrayList<UserModel> searchList = new ArrayList<>();
+        for (UserModel dataClass: dataList){
+            if (dataClass.getUsername().toLowerCase().contains(text.toLowerCase())){
+                searchList.add(dataClass);
+            }
+        }
+        listUserAdapter.searchDataList(searchList);
     }
     public static void openDrawer(DrawerLayout drawerLayout) {
         drawerLayout.openDrawer(GravityCompat.START);

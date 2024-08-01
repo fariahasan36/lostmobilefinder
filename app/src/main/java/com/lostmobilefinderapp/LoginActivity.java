@@ -42,7 +42,11 @@ public class LoginActivity extends AppCompatActivity {
                 if (!validateUsername() | !validatePassword()) {
 
                 } else {
-                    checkUser();
+                    try {
+                        checkUser();
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
         });
@@ -99,9 +103,10 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    public void checkUser() {
+    public void checkUser() throws Exception {
         String userName = loginUsername.getText().toString().trim();
-        String userPassword = loginPassword.getText().toString().trim();
+        String userPassword = AESCrypt.encrypt(loginPassword.getText().toString().trim());
+
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
         Query checkUserDatabase = reference.orderByChild("username").equalTo(userName);

@@ -35,16 +35,16 @@ import java.util.List;
 import java.util.UUID;
 
 public class ChatActivity extends AppCompatActivity {
-    DrawerLayout drawerLayout;
-    ImageView menu;
-    LinearLayout home, getMyPhone, settings, share, about, chat, logout;
-    String receiverName, receiverRoom;
-    String senderName, senderRoom;
-    DatabaseReference dbReferenceSender, dbReferenceReceiver, userReference;
-    ImageView sendBtn;
-    EditText messageText;
-    RecyclerView recyclerView;
-    MessageAdapter messageAdapter;
+    private DrawerLayout drawerLayout;
+    private ImageView menu;
+    private LinearLayout home, getMyPhone, settings, userList, about, chat, logout;
+    private String receiverName, receiverRoom;
+    private String senderName, senderRoom;
+    private DatabaseReference dbReferenceSender, dbReferenceReceiver, userReference;
+    private ImageView sendBtn;
+    private EditText messageText;
+    private RecyclerView recyclerView;
+    private MessageAdapter messageAdapter;
 
     // get help from  Android Studio Tutorial
     // Chatting Feature
@@ -58,7 +58,7 @@ public class ChatActivity extends AppCompatActivity {
         home = findViewById(R.id.home);
         getMyPhone = findViewById(R.id.getMyPhone);
         settings = findViewById(R.id.settings);
-        share = findViewById(R.id.share);
+        userList = findViewById(R.id.userList);
         chat = findViewById(R.id.chat);
         about = findViewById(R.id.about);
         logout = findViewById(R.id.logout);
@@ -99,10 +99,10 @@ public class ChatActivity extends AppCompatActivity {
                 redirectActivity(ChatActivity.this, AboutActivity.class);
             }
         });
-        share.setOnClickListener(new View.OnClickListener() {
+        userList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                redirectActivity(ChatActivity.this, ShareActivity.class);
+                redirectActivity(ChatActivity.this, ListUserActivity.class);
             }
         });
         logout.setOnClickListener(new View.OnClickListener() {
@@ -134,8 +134,10 @@ public class ChatActivity extends AppCompatActivity {
         recyclerView.setAdapter(messageAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        dbReferenceSender = FirebaseDatabase.getInstance().getReference("chat").child(senderRoom);
-        dbReferenceReceiver = FirebaseDatabase.getInstance().getReference("chat").child(receiverRoom);
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        dbReferenceSender = database.getReference("chat").child(senderRoom);
+        dbReferenceReceiver = database.getReference("chat").child(receiverRoom);
 
         dbReferenceSender.addValueEventListener(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")

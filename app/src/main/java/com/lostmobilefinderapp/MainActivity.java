@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
 
     DrawerLayout drawerLayout;
     ImageView menu;
-    LinearLayout home, getMyPhone, settings, share, about, chat, logout;
+    LinearLayout home, getMyPhone, settings, userList, about, chat, logout;
     Button postLostMobile, postFoundMobile;
 
     @Override
@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         home = findViewById(R.id.home);
         getMyPhone = findViewById(R.id.getMyPhone);
         settings = findViewById(R.id.settings);
-        share = findViewById(R.id.share);
+        userList = findViewById(R.id.userList);
         chat = findViewById(R.id.chat);
         about = findViewById(R.id.about);
         logout = findViewById(R.id.logout);
@@ -73,10 +73,10 @@ public class MainActivity extends AppCompatActivity {
                 redirectActivity(MainActivity.this, AboutActivity.class);
             }
         });
-        share.setOnClickListener(new View.OnClickListener() {
+        userList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                redirectActivity(MainActivity.this, ShareActivity.class);
+                redirectActivity(MainActivity.this, ListUserActivity.class);
             }
         });
         logout.setOnClickListener(new View.OnClickListener() {

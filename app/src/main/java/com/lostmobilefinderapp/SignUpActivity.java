@@ -46,9 +46,14 @@ public class SignUpActivity extends AppCompatActivity {
                 String name = signupName.getText().toString();
                 String email = signupEmail.getText().toString();
                 String username = signupUsername.getText().toString();
-                String password = signupPassword.getText().toString();
+                String password = null;
+                try {
+                    password = AESCrypt.encrypt(signupPassword.getText().toString());
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
 
-                UserModel helperClass = new UserModel(name, email, username, password);
+                UserModel helperClass = new UserModel(name, email, username, password, "");
                 reference.child(username).setValue(helperClass);
 
                 Toast.makeText(SignUpActivity.this, "You have signup successfully!", Toast.LENGTH_SHORT).show();

@@ -36,7 +36,7 @@ public class ListFoundMobileActivity extends AppCompatActivity {
     SearchView searchView;
     DrawerLayout drawerLayout;
     ImageView menu;
-    LinearLayout home, getMyPhone, settings, chat, share, about, logout;
+    LinearLayout home, getMyPhone, settings, chat, userList, about, logout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,7 +50,7 @@ public class ListFoundMobileActivity extends AppCompatActivity {
         getMyPhone = findViewById(R.id.getMyPhone);
         settings = findViewById(R.id.settings);
         chat = findViewById(R.id.chat);
-        share = findViewById(R.id.share);
+        userList = findViewById(R.id.userList);
         about = findViewById(R.id.about);
         logout = findViewById(R.id.logout);
 
@@ -90,10 +90,10 @@ public class ListFoundMobileActivity extends AppCompatActivity {
                 redirectActivity(ListFoundMobileActivity.this, AboutActivity.class);
             }
         });
-        share.setOnClickListener(new View.OnClickListener() {
+        userList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                redirectActivity(ListFoundMobileActivity.this, ShareActivity.class);
+                redirectActivity(ListFoundMobileActivity.this, ListUserActivity.class);
             }
         });
         logout.setOnClickListener(new View.OnClickListener() {

@@ -111,7 +111,24 @@
             android:drawablePadding="8dp"/>
 
     </LinearLayout>
+    <LinearLayout
+        android:id="@+id/userList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="12dp"
+        android:orientation="horizontal">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="User List"
+            android:textColor="@color/lavender"
+            android:textSize="20sp"
+            android:drawableLeft="@drawable/ic_baseline_folder_shared_24"
+            android:drawablePadding="8dp"/>
+
+    </LinearLayout>
     <LinearLayout
         android:id="@+id/about"
         android:layout_width="wrap_content"
@@ -130,24 +147,7 @@
             android:drawablePadding="8dp"/>
 
     </LinearLayout>
-    <LinearLayout
-        android:id="@+id/share"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="12dp"
-        android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Share"
-            android:textColor="@color/lavender"
-            android:textSize="20sp"
-            android:drawableLeft="@drawable/ic_baseline_folder_shared_24"
-            android:drawablePadding="8dp"/>
-
-    </LinearLayout>
 
     <View
         android:layout_width="match_parent"

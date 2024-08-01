@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.github.clans.fab.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -29,10 +30,10 @@ public class SettingsActivity extends AppCompatActivity {
     DrawerLayout drawerLayout;
     ImageView menu, myImage;
     TextView myName, myEmail, myUsername;
-    LinearLayout home, getMyPhone, settings, chat, share, about, logout;
+    LinearLayout home, getMyPhone, settings, chat, userList, about, logout;
     FloatingActionButton editMyProfile;
 
-    String imageUrl = "", key;
+    String imageUrl, key;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +46,7 @@ public class SettingsActivity extends AppCompatActivity {
         getMyPhone = findViewById(R.id.getMyPhone);
         settings = findViewById(R.id.settings);
         chat = findViewById(R.id.chat);
-        share = findViewById(R.id.share);
+        userList = findViewById(R.id.userList);
         about = findViewById(R.id.about);
         logout = findViewById(R.id.logout);
 
@@ -53,7 +54,7 @@ public class SettingsActivity extends AppCompatActivity {
         myEmail = findViewById(R.id.myEmail);
         myUsername = findViewById(R.id.myUsername);
         editMyProfile = findViewById(R.id.editMyProfile);
-//        myImage = findViewById(R.id.myImage);
+        myImage = findViewById(R.id.myImage);
 
         SessionManagement sessionManagement = new SessionManagement(SettingsActivity.this);
         String username = sessionManagement.getSession();
@@ -70,10 +71,13 @@ public class SettingsActivity extends AppCompatActivity {
                     String nameFromDB = snapshot.child(username).child("name").getValue(String.class);
                     String emailFromDB = snapshot.child(username).child("email").getValue(String.class);
                     String usernameFromDB = snapshot.child(username).child("username").getValue(String.class);
+                    String userImageDB = snapshot.child(username).child("userImage").getValue(String.class);
 
+                    Glide.with(SettingsActivity.this).load(userImageDB).into(myImage);
                     myName.setText(nameFromDB);
                     myUsername.setText(username);
                     myEmail.setText(emailFromDB);
+                    imageUrl = userImageDB;
                     key = userSnapshot.getKey();
 
                     Log.d("UserKeyin", "UserKeyin" + key);
@@ -94,6 +98,7 @@ public class SettingsActivity extends AppCompatActivity {
                         .putExtra("Name", myName.getText().toString())
                         .putExtra("Username", myUsername.getText().toString())
                         .putExtra("Email", myEmail.getText().toString())
+                        .putExtra("ImageUrl", imageUrl)
                         .putExtra("Key", key);
                 startActivity(intent);
             }
@@ -135,10 +140,10 @@ public class SettingsActivity extends AppCompatActivity {
                 redirectActivity(SettingsActivity.this, AboutActivity.class);
             }
         });
-        share.setOnClickListener(new View.OnClickListener() {
+        userList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                redirectActivity(SettingsActivity.this, ShareActivity.class);
+                redirectActivity(SettingsActivity.this, ListUserActivity.class);
             }
         });
         logout.setOnClickListener(new View.OnClickListener() {

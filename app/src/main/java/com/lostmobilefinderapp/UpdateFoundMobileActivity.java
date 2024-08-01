@@ -44,7 +44,7 @@ public class UpdateFoundMobileActivity extends AppCompatActivity {
     StorageReference storageReference;
     DrawerLayout drawerLayout;
     ImageView menu, updateFoundImage;
-    LinearLayout home, getMyPhone, settings, chat, share, about, logout;
+    LinearLayout home, getMyPhone, settings, chat, userList, about, logout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,7 +55,7 @@ public class UpdateFoundMobileActivity extends AppCompatActivity {
         getMyPhone = findViewById(R.id.getMyPhone);
         settings = findViewById(R.id.settings);
         chat = findViewById(R.id.chat);
-        share = findViewById(R.id.share);
+        userList = findViewById(R.id.userList);
         about = findViewById(R.id.about);
         logout = findViewById(R.id.logout);
 
@@ -104,10 +104,10 @@ public class UpdateFoundMobileActivity extends AppCompatActivity {
                 redirectActivity(UpdateFoundMobileActivity.this, AboutActivity.class);
             }
         });
-        share.setOnClickListener(new View.OnClickListener() {
+        userList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                redirectActivity(UpdateFoundMobileActivity.this, ShareActivity.class);
+                redirectActivity(UpdateFoundMobileActivity.this, ListUserActivity.class);
             }
         });
         logout.setOnClickListener(new View.OnClickListener() {

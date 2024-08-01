@@ -2,7 +2,7 @@ package com.lostmobilefinderapp;
 
 public class UserModel {
 
-    private String name, email, username, password, key;
+    private String name, email, username, password, key, userImage;
 
     public String getName() {
         return name;
@@ -36,6 +36,14 @@ public class UserModel {
         this.password = password;
     }
 
+    public String getUserImage() {
+        return userImage;
+    }
+
+    public void setUserImage(String userImage) {
+        this.userImage = userImage;
+    }
+
     public String getKey() {
         return key;
     }
@@ -44,11 +52,12 @@ public class UserModel {
         this.key = key;
     }
 
-    public UserModel(String name, String email, String username, String password) {
+    public UserModel(String name, String email, String username, String password, String userImage) {
         this.name = name;
         this.email = email;
         this.username = username;
         this.password = password;
+        this.userImage = userImage;
     }
 
     public UserModel(String name, String email, String password) {

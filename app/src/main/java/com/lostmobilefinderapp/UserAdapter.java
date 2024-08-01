@@ -5,10 +5,13 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,9 +22,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     private Context context;
     private List<UserModel> userModelList;
 
-    public UserAdapter(Context context) {
+    public UserAdapter(Context context, List<UserModel> userModelList) {
         this.context = context;
-        this.userModelList = new ArrayList<>();
+        this.userModelList = userModelList;
     }
 
     public void add(UserModel userClass){
@@ -46,7 +49,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         holder.name.setText(userClass.getName());
         holder.username.setText(userClass.getUsername());
         holder.email.setText(userClass.getEmail());
-
+        Glide.with(context).load(userClass.getUserImage()).into(holder.imageView);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
                                                @Override
                                                public void onClick(View v) {
@@ -71,11 +74,13 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
     public class UserViewHolder extends RecyclerView.ViewHolder {
         private TextView name, email, username;
+        private ImageView imageView;
         public UserViewHolder(@NonNull View itemView){
             super(itemView);
             name = itemView.findViewById(R.id.chat_user_name);
             username = itemView.findViewById(R.id.chat_user_username);
             email = itemView.findViewById(R.id.chat_user_email);
+            imageView = itemView.findViewById(R.id.chat_user_Image);
         }
     }
 }

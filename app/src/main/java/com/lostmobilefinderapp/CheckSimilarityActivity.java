@@ -13,6 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
@@ -58,43 +59,61 @@ public class CheckSimilarityActivity extends AppCompatActivity {
         if (OpenCVLoader.initDebug()) Log.d("LOADED", "SUCCESS");
         else Log.d("LOADED", "FAILURE");
 
-        lostImageViewToCheckSimilarity = findViewById(R.id.lostImageToCheckSimilarity);
-        foundImageViewToCheckSimilarity = findViewById(R.id.foundImageToCheckSimilarity);
+        BitmapDrawable bitmapDrawable = (BitmapDrawable) ContextCompat.getDrawable(this, R.drawable.my_phone_1);
+        Bitmap bitmap = bitmapDrawable.getBitmap();
 
-        txtLostImageUrl = findViewById(R.id.lostImageUrl);
-        txtFoundImageUrl = findViewById(R.id.foundImageUrl);
+        BitmapDrawable bitmapDrawable2 = (BitmapDrawable) ContextCompat.getDrawable(this, R.drawable.nokia);
+        Bitmap bitmap2 = bitmapDrawable2.getBitmap();
 
-        listViewFoundMobile = findViewById(R.id.listViewFoundMobile);
+        Mat img1 = new Mat();
+        Utils.bitmapToMat(bitmap, img1);
 
-        SessionManagement sessionManagement = new SessionManagement(CheckSimilarityActivity.this);
-        String username = sessionManagement.getSession();
-        DatabaseReference referenceLostMobile = FirebaseDatabase.getInstance().getReference("lostMobile").child(username);
+        Mat img2 = new Mat();
+        Utils.bitmapToMat(bitmap2, img2);
 
-        referenceLostMobile.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
+        hash1 = calculateHash(img1);
+        hash2 = calculateHash(img2);
 
-                if (snapshot.exists()) {
-                    // Remove the redundant child(username) calls
-                    String descriptionFromDB = snapshot.child("description").getValue(String.class);
-                    String locationFromDB = snapshot.child("location").getValue(String.class);
-                    String lostImageUrlFromDB = snapshot.child("lostImage").getValue(String.class);
+        similarityPercentage = calculateSimilarityPercentage(hash1, hash2);
 
-                    // Set the value to the TextView
-                    txtLostImageUrl.setText(lostImageUrlFromDB);
-                    lostImageUrl = lostImageUrlFromDB;
-                    loadLostImageAndProcess(lostImageUrl);
+        Log.d(TAG, "Similarity Percentage Main5:  " + similarityPercentage);
 
-                    setFoundImage();
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+//        lostImageViewToCheckSimilarity = findViewById(R.id.lostImageToCheckSimilarity);
+//        foundImageViewToCheckSimilarity = findViewById(R.id.foundImageToCheckSimilarity);
+//
+//        txtLostImageUrl = findViewById(R.id.lostImageUrl);
+//        txtFoundImageUrl = findViewById(R.id.foundImageUrl);
+//
+//        listViewFoundMobile = findViewById(R.id.listViewFoundMobile);
+//
+//        SessionManagement sessionManagement = new SessionManagement(CheckSimilarityActivity.this);
+//        String username = sessionManagement.getSession();
+//        DatabaseReference referenceLostMobile = FirebaseDatabase.getInstance().getReference("lostMobile").child(username);
+//
+//        referenceLostMobile.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//
+//                if (snapshot.exists()) {
+//                    // Remove the redundant child(username) calls
+//                    String descriptionFromDB = snapshot.child("description").getValue(String.class);
+//                    String locationFromDB = snapshot.child("location").getValue(String.class);
+//                    String lostImageUrlFromDB = snapshot.child("lostImage").getValue(String.class);
+//
+//                    // Set the value to the TextView
+//                    txtLostImageUrl.setText(lostImageUrlFromDB);
+//                    lostImageUrl = lostImageUrlFromDB;
+//                    loadLostImageAndProcess(lostImageUrl);
+//
+//                    setFoundImage();
+//                }
+//            }
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
     }
-
     private void setFoundImage() {
         DatabaseReference referenceFoundMobile = FirebaseDatabase.getInstance().getReference("foundMobile");
 
@@ -135,7 +154,6 @@ public class CheckSimilarityActivity extends AppCompatActivity {
             }
         });
     }
-
     private void loadLostImageAndProcess(String lostImageUrl) {
         Glide.with(this)
                 .asBitmap()
@@ -159,13 +177,11 @@ public class CheckSimilarityActivity extends AppCompatActivity {
                     }
                 });
     }
-
     private void processHash1(String setHash1) {
         this.getHash1 = setHash1;
         Log.d(TAG, "hash1 set=" + this.getHash1);
 
     }
-
     private void loadFoundImageAndProcess(String foundImageUrl) {
 
         Glide.with(getApplicationContext())
@@ -189,7 +205,6 @@ public class CheckSimilarityActivity extends AppCompatActivity {
                     }
                 });
     }
-
     private void processHash2(String setHash2) {
         this.getHash2 = setHash2;
         Log.d(TAG, "hash2 set=" + this.getHash2);

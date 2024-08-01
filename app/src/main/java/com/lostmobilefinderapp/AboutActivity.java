@@ -18,7 +18,7 @@ public class AboutActivity extends AppCompatActivity {
     DrawerLayout drawerLayout;
     ImageView menu, myImage;
     TextView myName, myEmail, myUsername;
-    LinearLayout home, getMyPhone, settings, chat, share, about, logout;
+    LinearLayout home, getMyPhone, settings, chat, userList, about, logout;
     FloatingActionButton editMyProfile;
 
     String imageUrl = "", key;
@@ -33,7 +33,7 @@ public class AboutActivity extends AppCompatActivity {
         getMyPhone = findViewById(R.id.getMyPhone);
         settings = findViewById(R.id.settings);
         chat = findViewById(R.id.chat);
-        share = findViewById(R.id.share);
+        userList = findViewById(R.id.userList);
         about = findViewById(R.id.about);
         logout = findViewById(R.id.logout);
 
@@ -73,10 +73,10 @@ public class AboutActivity extends AppCompatActivity {
                 recreate();
             }
         });
-        share.setOnClickListener(new View.OnClickListener() {
+        userList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                redirectActivity(AboutActivity.this, ShareActivity.class);
+                redirectActivity(AboutActivity.this, ListUserActivity.class);
             }
         });
         logout.setOnClickListener(new View.OnClickListener() {
