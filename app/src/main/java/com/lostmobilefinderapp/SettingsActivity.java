@@ -67,13 +67,17 @@ public class SettingsActivity extends AppCompatActivity {
 
                 DataSnapshot userSnapshot = snapshot.child(username);
 
-                if (snapshot.exists()){
+                if (snapshot.exists()) {
                     String nameFromDB = snapshot.child(username).child("name").getValue(String.class);
                     String emailFromDB = snapshot.child(username).child("email").getValue(String.class);
                     String usernameFromDB = snapshot.child(username).child("username").getValue(String.class);
                     String userImageDB = snapshot.child(username).child("userImage").getValue(String.class);
 
-                    Glide.with(SettingsActivity.this).load(userImageDB).into(myImage);
+                    if (!userImageDB.trim().isEmpty()) {
+                        Glide.with(SettingsActivity.this).load(userImageDB).into(myImage);
+                    } else {
+                        Glide.with(SettingsActivity.this).load(R.drawable.uploadimg).into(myImage);
+                    }
                     myName.setText(nameFromDB);
                     myUsername.setText(username);
                     myEmail.setText(emailFromDB);
@@ -156,15 +160,17 @@ public class SettingsActivity extends AppCompatActivity {
         });
     }
 
-    public static void openDrawer(DrawerLayout drawerLayout){
+    public static void openDrawer(DrawerLayout drawerLayout) {
         drawerLayout.openDrawer(GravityCompat.START);
     }
-    public static void closeDrawer(DrawerLayout drawerLayout){
-        if(drawerLayout.isDrawerOpen(GravityCompat.START)){
+
+    public static void closeDrawer(DrawerLayout drawerLayout) {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
         }
     }
-    public static void redirectActivity(Activity activity, Class secondActivity){
+
+    public static void redirectActivity(Activity activity, Class secondActivity) {
         Intent intent = new Intent(activity, secondActivity);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         activity.startActivity(intent);
@@ -172,7 +178,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onPause(){
+    protected void onPause() {
         super.onPause();
         closeDrawer(drawerLayout);
     }

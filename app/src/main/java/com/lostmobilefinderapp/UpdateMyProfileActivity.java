@@ -121,7 +121,11 @@ public class UpdateMyProfileActivity extends AppCompatActivity {
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
-            Glide.with(UpdateMyProfileActivity.this).load(bundle.getString("ImageUrl")).into(updateMyImage);
+            if(!bundle.getString("ImageUrl").trim().isEmpty()) {
+                Glide.with(UpdateMyProfileActivity.this).load(bundle.getString("ImageUrl")).into(updateMyImage);
+            } else {
+                Glide.with(UpdateMyProfileActivity.this).load(R.drawable.uploadimg).into(updateMyImage);
+            }
             updateMyName.setText(bundle.getString("Name"));
             updateMyEmail.setText(bundle.getString("Email"));
             key = bundle.getString("Key");
